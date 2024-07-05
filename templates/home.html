@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Heritage Library{% endblock %}
+
+{% block content %}
+<div class="container mx-auto flex flex-col md:flex-row items-center my-12 md:my-24">
+  <div class="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6 bg-white rounded-xl bg-opacity-70 mx-3">
+    <h1 class="font-bold text-4xl text-center my-4 ml-10">Welcome to Heritage Library</h1>
+    <p class="leading-normal mb-4">
+      This is a simple Heritage Library where you can borrow books, return books, and write reviews. You can also create an account, login, and logout. Library buildings often provide quiet areas for studying, as well as common areas for group study and collaboration, and may provide public facilities for access to their electronic resources, such as computers and access to the Internet.
+    </p>
+
+    <div class="flex justify-center w-full">
+      {% if user.is_authenticated %}
+      <h1 class="bg-blue-900 text-white rounded-none hover:bg-white hover:text-blue-900 hover:border-blue-900 shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">Knowing yourself</h1>
+       {% else %} 
+      
+      <a href="{% url 'register' %}" class="bg-blue-900 text-white rounded-none hover:bg-white hover:text-blue-900 hover:border-blue-900 shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">Register</a>
+    
+    {% endif %}
+  </div>
+  </div>
+  <div class="w-full lg:w-1/2 lg:py-6 text-center">
+    <img class="rounded-xl" src="{% static 'img/nt.jpg' %}" alt="Heritage Library">
+  </div>
+</div>
+
+<div class="container mx-auto mb-20">
+  <div class="flex flex-wrap">
+    <!-- Left Side: Categories -->
+    <div class="w-full lg:w-1/4 bg-dark p-5 rounded-lg">
+      {% if categorys %}
+      <div class='card bg-dark rounded-lg p-6'>
+        <div class="flex justify-center">
+          <label for="{{cat.id}}">
+            <h1 class="bg- text-3xl font-bold p-2 rounded-lg">All Categories </h1>
+          </label>
+        </div>
+        <br>
+        <ul class="space-y-4">
+          {% for category in categorys %}
+          <li>
+            <a class="block rounded-md bg-white hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 border border-gray-400 shadow text-center" href="{% url 'cat_slug' category.slug %}">
+              {{ category.name }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Side: Books -->
+    <div class="w-full lg:w-3/4 p-5">
+      {% if user.is_authenticated %}
+      <h3 class="text-dark text-2xl m-2 pt-5">BOOKS FOUND : {{ books|length }}</h3>
+      {% endif %}
+      <br>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        {% for book in books %}
+        <div class="p-3">
+          <div class="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" style="height: 560px; width: 295px;">
+            <a href="{% url 'book_details' book.id %}">
+              <img class="rounded-t-lg" src="{{ book.image.url }}" style="height: 330px; width: 295px;" alt="Book image" />
+            </a>
+            <div class="p-5">
+              <a href="{% url 'book_details' book.id %}">
+                <p class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ book.name|truncatewords:2 }}</p>
+              </a>
+              <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ book.description|truncatewords:10 }}</p>
+              <p class="mb-3 font-bold text-gray-900 dark:text-white">Borrow Price: ${{ book.borrow_price }}</p>
+              {% if user.is_authenticated %}
+              <a href="{% url 'book_details' book.id %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Details
+                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+              </a>
+              {% else %}
+              <a href="{% url 'login' %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Shop Now</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

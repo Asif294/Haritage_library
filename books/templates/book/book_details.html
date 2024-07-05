@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Book Detail Page{% endblock title %}
+
+{% block content %}
+<div class="card mt-3 bg-gray-900 text-white w-11/12 mx-auto rounded-lg shadow-lg p-6 mb-24">
+  {% if messages %}
+  {% for m in messages %}
+  <p class='text-blue-500 p-4'>{{ m }}</p>
+  <br>
+  {% endfor %}
+  {% endif %}
+
+  <div class="text-center">
+    <img src="{{ book.image.url }}" class="rounded-lg h-auto object-cover mx-auto" alt="book_image" style="width:270px; height:370px">
+  </div>
+
+  <div class="mt-5">
+    <h2 class="text-3xl font-bold mb-3 text-center">Title : {{ book.name }}</h2>
+    <h2 class="text-xl font-bold mb-3 ">Description:</h2>
+    <p class="mb-3 "> {{ book.description }}</p>
+    <p class="mb-3 mt-5 text-2xl text-center">Price: ${{ book.borro_price }}</p>
+    
+    <div class='flex flex-wrap justify-center mb-3'>
+      {% for ca in book.category.all %}
+      <span class="bg-gray-700 text-white rounded-full px-3 py-1 text-sm font-semibold mr-2">{{ ca }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class='flex flex-wrap justify-center mb-5'>
+    {% if user.is_authenticated %}
+    {% if is_borrowed %}
+    <button class="bg-red-500 text-white py-2 px-4 rounded m-1" disabled>Already Borrowed</button>
+    {% else %}
+    <a href="{% url 'borrow_book' book.id %}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded m-1">Borrow</a>
+
+    {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="flex flex-wrap justify-between mt-5">
+    <!-- Display Existing Reviews -->
+    <div class="w-full md:w-1/2 p-4">
+      <h3 class="text-2xl font-bold mb-3">Reviews</h3>
+      {% for review in book.reviews.all %}
+      <div class="review bg-gray-800 p-4 rounded-lg my-4">
+        <p class="text-gray-300 text-xl">{{ review.user.username }} </p>
+        <p><b> Rating :</b>  {{ review.rating }} stars</p>
+        
+        <p class="text-gray-200">{{ review.body }}</p>
+      </div>
+      <hr class="border-gray-700">
+      {% endfor %}
+    </div>
+
+    <!-- Review and Rating Form -->
+    {% if user.is_authenticated and is_borrowed %}
+    <div class="w-full md:w-1/2 p-4">
+      <h3 class="text-2xl font-bold mb-3">Submit Your Review</h3>
+      <form action="{% url 'submit_review' book.id %}" method="post" class="mb-5 mt-5">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="review_body" class="block text-sm font-medium text-gray-200">Review:</label>
+            <textarea id="review_body" name="review_body" class="mt-1 block w-full p-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700"></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="rating" class="block text-sm font-medium text-gray-200">Rating:</label>
+            <select id="rating" name="rating" class="mt-1 block w-full p-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700">
+                <option value="">Choose Rating</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Submit Review</button>
+    </form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

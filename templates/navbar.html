@@ -1,0 +1,33 @@
+<nav class="flex items-center justify-between flex-wrap bg-gradient-to-r from-green-500 to-blue-400 p-6 px-10 shadow-lg">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <span class="font-semibold text-xl tracking-tight"><a href="/" class="text-white">Heritage Library</a></span>
+    </div>
+    <div class="block lg:hidden">
+        <button class="flex items-center px-3 py-2 border rounded text-white border-white hover:text-blue-900 hover:border-blue-900">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+        </button>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto px-10">
+        {% if request.user.is_authenticated %}
+            <div class="text-md lg:flex-grow">
+                <a href="{% url 'deposite' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-yellow-300 font-medium transition duration-300 ease-in-out mr-4">
+                    Deposit
+                </a>
+                <h3 class="block mt-4 lg:inline-block lg:mt-0 text-white font-bold px-5 mr-4"> ( balance: {{ request.user.account.balance }} ) </h3>
+            </div>
+            <div class="flex items-center w-auto">
+                <div class="text-white my-auto font-black px-5">Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</div>
+                <a href="{% url 'profile' %}" class="mx-2 inline-block font-medium text-sm px-4 py-2 leading-none bg-yellow-400 rounded text-blue-900 hover:bg-yellow-500 hover:text-white transition duration-300 ease-in-out mt-4 lg:mt-0">Profile</a>
+                <a href="{% url 'logout' %}" class="mx-2 inline-block font-medium text-sm px-4 py-2 leading-none bg-red-400 rounded text-white hover:bg-red-500 transition duration-300 ease-in-out mt-4 lg:mt-0">Logout</a>
+            </div>
+        {% else %}
+            <div class="text-md lg:flex-grow"></div>
+            <div>
+                <a href="{% url 'login' %}" class="mr-2 inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-900 rounded text-white hover:bg-blue-700 transition duration-300 ease-in-out mt-4 lg:mt-0">Login</a>
+            </div>
+            <div>
+                <a href="{% url 'register' %}" class="inline-block font-medium text-sm px-4 py-2 leading-none bg-green-400 rounded text-blue-900 hover:bg-green-500 transition duration-300 ease-in-out mt-4 lg:mt-0">Register</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
